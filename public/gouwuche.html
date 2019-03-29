@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>攀枝花农产品展销平台购物页面</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        table input {
+            display: none;
+        }
+
+        table .btn-ok,
+        table .btn-cancel {
+            display: none;
+        }
+
+        .edit input {
+            display: inline-block;
+        }
+
+        .edit span {
+            display: none;
+        }
+
+        .edit .btn-ok,
+        .edit .btn-cancel {
+            display: inline-block;
+        }
+
+        .edit .btn-edit,
+        .edit .btn-del,
+        .edit .btn-gouwu {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/index">攀枝花特设农产品展销平台</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="/shopping.html">商店 <span class="sr-only">(current)</span></a></li>
+                    <li><a href="#">消息</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                            aria-expanded="false">快速通道 <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">自选订单</a></li>
+                            <li><a href="#">购物车</a></li>
+                            <li><a href="#">收藏</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="#">修改订单</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="#">查询余额</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#" class="username">欢迎您</a></li>
+                    <li><a href="/" class="quit">退出</a></li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+    <div class="container">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>编号</th>
+                    <th>商品名称</th>
+                    <th>商品价格</th>
+                    <th>购买数量</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <button class="btn btn-warning btn-lg col-md-offset-11">支付</button>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
+    <script>
+
+        $.ajax({
+            url: "/gouwuche_select",
+            method: "get",
+            data: {
+                username: localStorage.getItem("username")
+            }
+        }).then(function (res) {
+            res.forEach(function (re, idx) {
+                var html = `<tr data-ids='${re.id}'>
+						<td>${idx + 1}</td>
+						<td>${re.tradename}</td>
+						<td>${re.price}</td>
+						<td><span>${re.num}</span><input type="number"></td>
+						<td>
+                        <button class="btn btn-primary btn-xs btn-edit" id="btn-edit">编辑</button>
+                        <button class="btn btn-xs btn-success btn-gouwu"" id="btn-del">删除</button>
+						<button class="btn btn-success btn-xs btn-ok" id="btn-ok">确定</button>
+						<button class="btn btn-warning btn-xs btn-cancel" id="btn-cancel">取消</button>
+						</td>
+					</tr>`;
+                $("tbody").append(html);
+            })
+        })
+        $('tbody').on('click', function (e) {
+            e = e || window.e;
+            var target = e.target || e.srcElement;
+            var tr = target.parentNode.parentNode;
+            switch (target.id) {
+                case "btn-edit": window.edit(tr);
+                    break;
+                case "btn-cancel": window.cancel(tr);
+                    break;
+                case "btn-ok": window.ok(tr);
+                    break;
+                case "btn-del": window.del(tr);
+                    break;
+                default:
+                    break;
+            }
+            return false;
+        })
+        function edit(tr) {
+            tr.classList.add('edit');
+            $(tr).find("span").each(function (ind, ele) {
+                if ($(this).text() == 0) {
+                    $(this).next().val("")
+                } else {
+                    $(this).next().val($(this).text());
+                }
+            })
+        };
+        function ok(tr) {
+            tr.classList.remove('edit');
+            var ids = tr.dataset.ids;
+            var num;
+            $(tr).find("input").each(function (idx, val) {
+                num = $(this).val();
+                if ($(this).val() == "") {
+                    $(tr).find("input").prev().text("0");
+                } else {
+                    $(tr).find("input").prev().text($(this).val());
+                }
+            })
+            $.ajax({
+                url: "/gouwuche_ok",
+                method: "get",
+                data: {
+                    num: num,
+                    id: ids
+                }
+            })
+        }
+        function cancel(tr) {
+            tr.classList.remove('edit')
+        }
+        function del(tr) {
+            var ids = tr.dataset.ids;
+            $(tr).remove();
+            $.ajax({
+                url: "/gouwuche_del",
+                method: "post",
+                data: {
+                    id: ids
+                }
+            }).then(function (res) {
+                if (res.res_code == 1) {
+                    alert("删除成功！")
+                }
+            })
+        }
+    </script>
+</body>
+
+</html>

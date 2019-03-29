@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>攀枝花农产品展销平台注册页面</title>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+		}
+
+		body,
+		html {
+			width: 100%;
+			height: 100%;
+		}
+
+		body {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			background: url(/img/login_bg.jpg)no-repeat center center;
+			background-size: 100% 100%;
+		}
+
+		form {
+			width: 500px;
+			height: 500px;
+			margin: 20px auto;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			border-radius: 10px;
+			background: rgba(0, 0, 0, .2);
+			color: black;
+		}
+
+		input {
+			margin: 20px auto;
+		}
+
+		.username,
+		.password {
+			height: 30px;
+			border: none;
+			outline: 0;
+			background: rgba(0, 0, 0, .3);
+			padding-left: 13px;
+			border-radius: 20px;
+		}
+
+		#over {
+			border: none;
+			background: white;
+			width: 48px;
+			font-size: 16px;
+			height: 20px;
+		}
+	</style>
+</head>
+
+<body>
+	<form action="/login" method="POST">
+		用户名： <input type="text" name="username" class="username"><br>
+		密码： <input type="password" name="password" class="password"><br>
+		确认密码：<input type="password" name="repassword" class="password"><br>
+		<input type="submit" value="完成" id="over">
+	</form>
+</body>
+
+</html>

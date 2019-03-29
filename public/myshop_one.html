@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>攀枝花农产品展销平台个人店面</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+          data-target="#bs-example-navbar-collapse-9" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/index">攀枝花特设农产品展销平台</a>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-9">
+        <ul class="nav navbar-nav">
+          <li><a href="/myshop.html">商店管理页面</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li class="username"><a href="#">username</a></li>
+          <li class="shopname"><a href="#">shopname</a></li>
+        </ul>
+      </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+  </nav>
+  <main class="container"></main>
+
+  <script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
+  <script>
+    // $.get('/shop', function (data, stat) {
+    //   console.log(data.shopname);
+    //   localStorage.setItem('shopname', data.shopname)
+    //   $('.shopname a').text(data.shopname);
+    // })
+    window.onload = function () {
+      $('.shopname a').text(localStorage.getItem('shopname'))
+      if (localStorage.getItem("username") !== null) {
+        $('.username a').text(localStorage.getItem("username"));
+      }
+      $.ajax({
+        url: '/myshop_one.html',
+        type: 'post',
+        data: {
+          username: localStorage.getItem('username'),
+          shopname: localStorage.getItem('shopname'),
+        },
+        dataType: 'json',
+        success: function (e) {
+          if (e.success == true) {
+            console.log(data + '1');
+            console.log(localStorage.getItem('username') + '2');
+          } else {
+            console.log(false, e);
+            $.each(e, function (index, value) {
+              $('.container').append(`
+              <div class='col-xs-6 col-sm-3'>
+                <img width='100%' src='${e[index].tradeimg}'>
+                <p style='margin-top:10px'>${e[index].tradename}</p>
+                <p>${e[index].tradeinfo}<span style='float:right'>${e[index].price}</span></p>
+                <button onclick='xiajia(${e[index].id})'>下架</button>
+              </div>
+            <script>
+              function xiajia(eid) {
+                $.post({
+                  url:'/xiajia',
+                  data:{
+                    id:eid
+                  }
+                });
+                if(confirm('真的要下架吗？')){
+                  parent.location.reload();
+                }
+              }
+            <\/script>`)
+            })
+            if ($('.container').html().length == 0) {
+              $('.container').html("<img src=' ./img/timg.jpg' />")
+            }
+            return false;
+          }
+        },
+        error: function (err) {
+          console.log(false);
+          return false;
+        }
+      });
+      console.log($('.container').html().length)
+
+    }
+  </script>
+</body>
+
+</html>

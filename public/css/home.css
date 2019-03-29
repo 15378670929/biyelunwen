@@ -1,0 +1,43 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+.user{
+    display: none;
+}
+body{
+    display: flex;
+    flex-direction: column;
+    background: #e5dab3;
+}
+main{
+    width: 90%;
+    margin: 0 auto;
+    overflow: auto;
+    flex: 1;
+}
+.openshop,.shopping{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 300px;
+    border-radius: 20px;
+    font-size: 25px;
+    font-weight: bolder;
+}
+.openshop a,.shopping a{
+    color: white;
+}
+.openshop{
+    background: linear-gradient(orange,green);
+}
+.shopping{
+    background: linear-gradient(red,blue);
+}
+
+footer{
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>攀枝花农产品展销平台个人店面</title>
+    <style>
+        /* form {} */
+    </style>
+    <script type="text/javascript">
+        function stopDefault(e) {
+            if (e && e.preventDefault)
+                e.preventDefault();
+            else
+                window.event.returnValue = false;
+
+            return false;
+        } 
+    </script>
+</head>
+
+<body>
+    <form action="/shangjia" method="POST" enctype="multipart/form-data">
+        <p><span>商品名称</span><input type="text" name="tradename" id="tradename"></p>
+        <p><span>商品价格</span><input type="text" name="tradeprice" id="tradeprice"></p>
+        <p><span>商品介绍</span><input type="text" name="tradeinfo" id="tradeinfo"></p>
+        <p><span>商品图片</span><input type="file" name="tradeimg" id="tradeimg"></p>
+        <p><input type="text" style="display:none" name="username" id="username"></p>
+        <p><input type="text" style="display:none" name="shopname" id="shopname"></p>
+        <input type="submit" value="提交" class="submit">
+    </form>
+    <a href="/myshop.html">返回商店管理页面</a>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+    <script>
+
+        window.onload = function () {
+            $('#username').val(localStorage.getItem('username'));
+            $('#shopname').val(localStorage.getItem('shopname'));
+        }
+    </script>
+</body>
+
+</html>
