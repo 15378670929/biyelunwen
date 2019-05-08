@@ -40,6 +40,9 @@ app.all('*', function (req, res, next) {
     next();
 });
 
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+
 app.use(express.static(path.join(__dirname, "./public")));
 app.use(express.static(__dirname + "./public"));
 app.use('/upload', express.static(path.join(__dirname, "./upload")));
@@ -50,6 +53,7 @@ app.get("/", router.showIndex);
 app.get("/index", router.showIndex);
 app.get("/regist", router.showRegist);
 app.get("/login", router.showLogin);
+app.get("/mine", router.showMine);
 app.get('/login', function (req, res) {
     data = {};
 })
@@ -355,5 +359,6 @@ app.post("/gouwuche_del", function (req, res) {
         }
     })
 })
+
 
 app.listen(3000);

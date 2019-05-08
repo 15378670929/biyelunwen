@@ -11,53 +11,7 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="javascript:void(0);">攀枝花特设农产品展销平台</a>
-            </div>
-
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">
-                    <li class="active"><a href="#">首页 <span class="sr-only">(current)</span></a></li>
-                    <li><a href="#">消息</a></li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                            aria-expanded="false">快速通道 <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#">自选订单</a></li>
-                            <li><a href="#">购物车</a></li>
-                            <li><a href="#">收藏</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="#">修改订单</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="#">查询余额</a></li>
-                        </ul>
-                    </li>
-                </ul>
-                <form class="navbar-form navbar-left" action="/classify">
-                    <div class="form-group">
-                        <input type="text" class="form-control" placeholder="芒果">
-                    </div>
-                    <button type="submit" class="btn btn-default">搜索</button>
-                </form>
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a href="javascript:void(0);" class="username">欢迎您</a></li>
-                    <li><a href="/login" class="quit quit2">登录</a></li>
-                    <li><a href="/login" class="quit quit1">退出</a></li>
-                </ul>
-            </div><!-- /.navbar-collapse -->
-        </div><!-- /.container-fluid -->
-    </nav>
+    <div id="head"></div>
     <main class="container">
         <div class="row">
             <div class="openshop col-md-6 col-xs-12">
@@ -93,64 +47,68 @@
         }
 
         window.onload = function () {
-            console.log(localStorage.getItem('username'))
-            if (localStorage.getItem('username') == null) {
-                $(".myshop").on('click', function () {
+            $("#head").load('./head.html', function () {
+                console.log(localStorage.getItem('username'))
+                if (localStorage.getItem('username') == null) {
+                    $(".myshop").on('click', function () {
 
-                    if (confirm('亲，需要登录哦！请问是否需要登录')) {
+                        if (confirm('亲，需要登录哦！请问是否需要登录')) {
+                            window.location.href = '/login'
+                        }
+                    })
+                    $('.username').on("click", function () {
                         window.location.href = '/login'
-                    }
+                    })
+                    document.getElementsByClassName("username")[0].innerHTML = document.getElementsByClassName("username")[0].innerHTML
+                    $('.quit1').hide();
+                } else {
+                    $(".myshop").on('click', function () {
+                        window.location.href = '/myshop.html';
+                    });
+                    $('.quit2').hide();
+                    document.getElementsByClassName("username")[0].innerHTML = document.getElementsByClassName("username")[0].innerHTML + ',' + localStorage.getItem('username');
+
+                }
+
+
+                $(".shop").on('click', function () {
+                    window.location.href = '/shopping.html';
                 })
-                $('.username').on("click", function () {
-                    window.location.href = '/login'
+                $('.quit').on('click', function () {
+                    localStorage.clear();
                 })
-                document.getElementsByClassName("username")[0].innerHTML = document.getElementsByClassName("username")[0].innerHTML
-                $('.quit1').hide();
-            } else {
-                $(".myshop").on('click', function () {
-                    window.location.href = '/myshop.html';
-                });
-                $('.quit2').hide();
-                document.getElementsByClassName("username")[0].innerHTML = document.getElementsByClassName("username")[0].innerHTML + ',' + localStorage.getItem('username');
-            }
 
-
-            $(".shop").on('click', function () {
-                window.location.href = '/shopping.html';
-            })
-            $('.quit').on('click', function () {
-                localStorage.clear();
-            })
-
-            $.ajax({
-                url: '/shop',
-                type: 'post',
-                data: {
-                    username: localStorage.getItem('username')
-                },
-                dataType: 'json',
-                success: function (e) {
-                    if (e.success == true) {
-                        console.log(data + '1');
-                        console.log(localStorage.getItem('username') + '2');
-                    } else {
-                        console.log(false, e);
+                $.ajax({
+                    url: '/shop',
+                    type: 'post',
+                    data: {
+                        username: localStorage.getItem('username')
+                    },
+                    dataType: 'json',
+                    success: function (e) {
+                        if (e.success == true) {
+                            console.log(data + '1');
+                            console.log(localStorage.getItem('username') + '2');
+                        } else {
+                            console.log(false, e);
+                            return false;
+                        }
+                    },
+                    error: function (err) {
+                        console.log(false);
                         return false;
                     }
-                },
-                error: function (err) {
-                    console.log(false);
-                    return false;
+                })
+                if (window.location.pathname == '/') {
+                    localStorage.clear();
+                } else {
+                    $.get('/shop', function (data, stat) {
+                        console.log(data.shopname);
+                        localStorage.setItem('shopname', data.shopname)
+                    })
                 }
             })
-            if (window.location.pathname == '/') {
-                localStorage.clear();
-            } else {
-                $.get('/shop', function (data, stat) {
-                    console.log(data.shopname);
-                    localStorage.setItem('shopname', data.shopname)
-                })
-            }
+
 
         }
 

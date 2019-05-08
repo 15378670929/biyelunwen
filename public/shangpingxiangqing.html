@@ -39,43 +39,7 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="/index">攀枝花特设农产品展销平台</a>
-            </div>
-
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">
-                    <li class="active"><a href="/shopping.html">商店 <span class="sr-only">(current)</span></a></li>
-                    <li><a href="javascript:void(0);">消息</a></li>
-                    <li class="dropdown">
-                        <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                            aria-haspopup="true" aria-expanded="false">快速通道 <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="gouwuche.html">购物车</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li role="separator" class="divider"></li>
-                            <li><a href="javascript:void(0);">查询余额</a></li>
-                        </ul>
-                    </li>
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a href="javascript:void(0);" class="username">欢迎您</a></li>
-                    <li><a href="/" class="quit">退出</a></li>
-                </ul>
-            </div><!-- /.navbar-collapse -->
-        </div><!-- /.container-fluid -->
-    </nav>
+    <div id="head"></div>
     <div class="container">
         <table class="table table-bordered">
             <thead>
@@ -94,6 +58,29 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
     <script>
+        $("#head").load('./head.html', function () {
+            console.log(localStorage.getItem('username') == '')
+            if (localStorage.getItem('username') == null || localStorage.getItem('username') == '') {
+                $(".cart").on('click', function () {
+
+                    if (confirm('亲，需要登录哦！请问是否需要登录')) {
+                        window.location.href = '/login'
+                    }
+                })
+                $('.username').on("click", function () {
+                    window.location.href = '/login'
+                })
+                document.getElementsByClassName("username")[0].innerHTML = document.getElementsByClassName("username")[0].innerHTML
+                $('.quit1').hide();
+            } else {
+                $(".cart").on('click', function () {
+                    window.location.href = '/gouwuche.html';
+                });
+                $('.quit2').hide();
+                document.getElementsByClassName("username")[0].innerHTML = document.getElementsByClassName("username")[0].innerHTML + ',' + localStorage.getItem('username');
+            }
+        })
+
         function GetRequest() {
             var url = location.search; //获取url中"?"符后的字串  
             var theRequest = new Object();
@@ -174,19 +161,28 @@
             tr.classList.remove('edit')
         }
         function gouwu(tr) {
-            console.log($(tr).children()[1].innerHTML,
-                $(tr).children()[2].innerHTML,
-                $($(tr).children()[3]).children()[0].innerHTML);
-            $.ajax({
-                url: "/gouwuche",
-                method: "post",
-                data: {
-                    tradename: $(tr).children()[1].innerHTML,
-                    price: $(tr).children()[2].innerHTML,
-                    num: $($(tr).children()[3]).children()[0].innerHTML,
-                    username: localStorage.getItem("username")
+            if (localStorage.getItem('username') == null || localStorage.getItem('username') == '') {
+                if (confirm('亲，需要登录哦！请问是否需要登录')) {
+                    window.location.href = '/login'
                 }
-            })
+            } else {
+                console.log($(tr).children()[1].innerHTML,
+                    $(tr).children()[2].innerHTML,
+                    $($(tr).children()[3]).children()[0].innerHTML);
+                $.ajax({
+                    url: "/gouwuche",
+                    method: "post",
+                    data: {
+                        tradename: $(tr).children()[1].innerHTML,
+                        price: $(tr).children()[2].innerHTML,
+                        num: $($(tr).children()[3]).children()[0].innerHTML,
+                        username: localStorage.getItem("username")
+                    }
+                }).then(function () {
+                    alert("加入购物车成功！")
+                })
+            }
+
         }
     </script>
 </body>
